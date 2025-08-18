@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المباريات - واحد كورة</title>
+    <meta name="description" content="جدول المباريات القادمة والمنتهية للفريق.">
+    <meta property="og:title" content="المباريات - واحد كورة">
+    <meta property="og:description" content="تابع جدول المباريات ونتائجها.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="assets/images/logo.png">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <div class="logo-container">
+                        <img src="assets/images/logo.png" alt="شعار واحد كورة" class="logo-img">
+                        <h2>واحد كورة</h2>
+                    </div>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link">الرئيسية</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="news.html" class="nav-link">الأخبار</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="matches.html" class="nav-link active">المباريات</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="about.html" class="nav-link">عن الفريق</a>
+                    </li>
+                </ul>
+                <div class="nav-actions">
+                    <button id="themeToggle" class="theme-toggle" aria-label="تبديل الوضع">
+                        <span class="icon">🌙</span>
+                        <span class="text">الوضع الداكن</span>
+                    </button>
+                </div>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <section class="page-header">
+            <div class="container">
+                <h1>⚽ جدول المباريات</h1>
+                <p>تابع جميع مباريات الفريق والنتائج</p>
+            </div>
+        </section>
+
+        <!-- Match Filters -->
+        <section class="match-filters">
+            <div class="container">
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">جميع المباريات</button>
+                    <button class="filter-btn" data-filter="upcoming">المباريات القادمة</button>
+                    <button class="filter-btn" data-filter="completed">المباريات المنتهية</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Matches Section -->
+        <section class="matches-section">
+            <div class="container">
+                <!-- المباريات القادمة -->
+                <div class="matches-group">
+                    <h2>🔜 المباريات القادمة</h2>
+                    <div class="matches-table">
+                        <div class="match-card upcoming" data-date="2025-10-25T20:00:00">
+                            <div class="match-date">
+                                <span class="day">الجمعة</span>
+                                <span class="date">25 أكتوبر 2025</span>
+                                <span class="time">20:00</span>
+                            </div>
+                            <div class="match-teams">
+                                <div class="team home">
+                                    <span class="team-logo">🟢</span>
+                                    <span class="team-name">فريقنا</span>
+                                </div>
+                                <div class="vs">VS</div>
+                                <div class="team away">
+                                    <span class="team-name">النصر</span>
+                                    <span class="team-logo">🔵</span>
+                                </div>
+                            </div>
+                            <div class="match-venue">
+                                <span>🏟️ ملعب الملك فهد</span>
+                            </div>
+                        </div>
+
+                        <div class="match-card upcoming" data-date="2025-10-29T18:30:00">
+                            <div class="match-date">
+                                <span class="day">الثلاثاء</span>
+                                <span class="date">29 أكتوبر 2025</span>
+                                <span class="time">18:30</span>
+                            </div>
+                            <div class="match-teams">
+                                <div class="team home">
+                                    <span class="team-logo">🔴</span>
+                                    <span class="team-name">الأهلي</span>
+                                </div>
+                                <div class="vs">VS</div>
+                                <div class="team away">
+                                    <span class="team-name">فريقنا</span>
+                                    <span class="team-logo">🟢</span>
+                                </div>
+                            </div>
+                            <div class="match-venue">
+                                <span>🏟️ ملعب الأهلي</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- المباريات المنتهية -->
+                <div class="matches-group">
+                    <h2>✅ المباريات المنتهية</h2>
+                    <div class="matches-table">
+                        <div class="match-card completed win">
+                            <div class="match-date">
+                                <span class="day">الجمعة</span>
+                                <span class="date">18 أكتوبر 2024</span>
+                                <span class="time">20:00</span>
+                            </div>
+                            <div class="match-teams">
+                                <div class="team home">
+                                    <span class="team-logo">🟢</span>
+                                    <span class="team-name">فريقنا</span>
+                                </div>
+                                <div class="score">3 - 1</div>
+                                <div class="team away">
+                                    <span class="team-name">الاتحاد</span>
+                                    <span class="team-logo">🟡</span>
+                                </div>
+                            </div>
+                            <div class="match-result">
+                                <span class="result-badge win">فوز</span>
+                            </div>
+                        </div>
+
+                        <div class="match-card completed draw">
+                            <div class="match-date">
+                                <span class="day">الثلاثاء</span>
+                                <span class="date">15 أكتوبر 2024</span>
+                                <span class="time">18:30</span>
+                            </div>
+                            <div class="match-teams">
+                                <div class="team home">
+                                    <span class="team-logo">⚫</span>
+                                    <span class="team-name">الشباب</span>
+                                </div>
+                                <div class="score">2 - 2</div>
+                                <div class="team away">
+                                    <span class="team-name">فريقنا</span>
+                                    <span class="team-logo">🟢</span>
+                                </div>
+                            </div>
+                            <div class="match-result">
+                                <span class="result-badge draw">تعادل</span>
+                            </div>
+                        </div>
+
+                        <div class="match-card completed win">
+                            <div class="match-date">
+                                <span class="day">السبت</span>
+                                <span class="date">12 أكتوبر 2024</span>
+                                <span class="time">17:00</span>
+                            </div>
+                            <div class="match-teams">
+                                <div class="team home">
+                                    <span class="team-logo">🟢</span>
+                                    <span class="team-name">فريقنا</span>
+                                </div>
+                                <div class="score">2 - 0</div>
+                                <div class="team away">
+                                    <span class="team-name">الفيصلي</span>
+                                    <span class="team-logo">🟠</span>
+                                </div>
+                            </div>
+                            <div class="match-result">
+                                <span class="result-badge win">فوز</span>
+                            </div>
+                        </div>
+
+                        <div class="match-card completed loss">
+                            <div class="match-date">
+                                <span class="day">الأربعاء</span>
+                                <span class="date">9 أكتوبر 2024</span>
+                                <span class="time">19:00</span>
+                            </div>
+                            <div class="match-teams">
+                                <div class="team home">
+                                    <span class="team-logo">🔵</span>
+                                    <span class="team-name">الهلال</span>
+                                </div>
+                                <div class="score">3 - 1</div>
+                                <div class="team away">
+                                    <span class="team-name">فريقنا</span>
+                                    <span class="team-logo">🟢</span>
+                                </div>
+                            </div>
+                            <div class="match-result">
+                                <span class="result-badge loss">خسارة</span>
+                            </div>
+                        </div>
+
+                        <div class="match-card completed win">
+                            <div class="match-date">
+                                <span class="day">الأحد</span>
+                                <span class="date">6 أكتوبر 2024</span>
+                                <span class="time">16:30</span>
+                            </div>
+                            <div class="match-teams">
+                                <div class="team home">
+                                    <span class="team-logo">🟢</span>
+                                    <span class="team-name">فريقنا</span>
+                                </div>
+                                <div class="score">4 - 2</div>
+                                <div class="team away">
+                                    <span class="team-name">التعاون</span>
+                                    <span class="team-logo">🟣</span>
+                                </div>
+                            </div>
+                            <div class="match-result">
+                                <span class="result-badge win">فوز</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 موقع كرة القدم. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
