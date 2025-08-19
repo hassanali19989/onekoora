@@ -18,31 +18,32 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // تفعيل فلاتر المباريات
+    // تفعيل فلاتر المباريات (ديناميكي)
     const filterButtons = document.querySelectorAll('.filter-btn');
-    const matchCards = document.querySelectorAll('.match-card');
+    const leagueButtons = document.querySelectorAll('[data-league]');
+    let currentFilter = localStorage.getItem('matchFilter') || 'all';
+    let currentLeague = localStorage.getItem('leagueFilter') || 'all';
     
     if (filterButtons.length > 0) {
         filterButtons.forEach(button => {
             button.addEventListener('click', function() {
-                // إزالة الكلاس النشط من جميع الأزرار
                 filterButtons.forEach(btn => btn.classList.remove('active'));
-                // إضافة الكلاس النشط للزر المضغوط
                 this.classList.add('active');
-                
-                const filter = this.getAttribute('data-filter');
-                
-                matchCards.forEach(card => {
-                    if (filter === 'all') {
-                        card.style.display = 'grid';
-                    } else if (filter === 'upcoming' && card.classList.contains('upcoming')) {
-                        card.style.display = 'grid';
-                    } else if (filter === 'completed' && card.classList.contains('completed')) {
-                        card.style.display = 'grid';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
+                currentFilter = this.getAttribute('data-filter');
+                localStorage.setItem('matchFilter', currentFilter);
+                applyCombinedFilter();
+            });
+        });
+    }
+
+    if (leagueButtons.length > 0) {
+        leagueButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                leagueButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                currentLeague = this.getAttribute('data-league');
+                localStorage.setItem('leagueFilter', currentLeague);
+                applyCombinedFilter();
             });
         });
     }
@@ -85,6 +86,155 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(el);
     });
 
+    // مساعد: تنسيق شعار الفريق (إيموجي أو صورة)
+    function formatLogo(logo) {
+        if (!logo) return '';
+        const s = String(logo).trim();
+        const isImage = /\.(png|svg|jpg|jpeg|webp)$/i.test(s) || s.startsWith('assets/') || s.startsWith('http');
+        return isImage ? `<img src="${s}" alt="" loading="lazy">` : s;
+    }
+
+    // تحميل المباريات من JSON وبناء البطاقات
+    async function loadMatches() {
+        const upcomingContainer = document.getElementById('upcomingMatches');
+        const completedContainer = document.getElementById('completedMatches');
+        if (!upcomingContainer && !completedContainer) return;
+        try {
+            const res = await fetch('assets/data/matches.json', { cache: 'no-store' });
+            const data = await res.json();
+
+            if (upcomingContainer) {
+                upcomingContainer.innerHTML = '';
+                (data.upcoming || []).forEach(m => {
+                    const card = document.createElement('div');
+                    card.className = 'match-card upcoming';
+                    card.setAttribute('data-date', m.datetime);
+                    if (m.league) card.setAttribute('data-league', m.league);
+                    card.innerHTML = `
+                        <div class="match-date">
+                            <span class="day">${m.day}</span>
+                            <span class="date">${m.date}</span>
+                            <span class="time">${m.time}</span>
+                        </div>
+                        <div class="match-league">${m.league ? '🏆 ' + m.league : ''}</div>
+                        <div class="match-teams">
+                            <div class="team home">
+                                <span class="team-logo">${formatLogo(m.home.logo)}</span>
+                                <span class="team-name">${m.home.name}</span>
+                            </div>
+                            <div class="vs">VS</div>
+                            <div class="team away">
+                                <span class="team-name">${m.away.name}</span>
+                                <span class="team-logo">${formatLogo(m.away.logo)}</span>
+                            </div>
+                        </div>
+                        <div class="match-venue">
+                            <span>${m.venue || ''}</span>
+                        </div>`;
+                    upcomingContainer.appendChild(card);
+                });
+            }
+
+            if (completedContainer) {
+                completedContainer.innerHTML = '';
+                (data.completed || []).forEach(m => {
+                    const card = document.createElement('div');
+                    card.className = `match-card completed ${m.result || ''}`;
+                    if (m.league) card.setAttribute('data-league', m.league);
+                    card.innerHTML = `
+                        <div class="match-date">
+                            <span class="day">${m.day}</span>
+                            <span class="date">${m.date}</span>
+                            <span class="time">${m.time}</span>
+                        </div>
+                        <div class="match-league">${m.league ? '🏆 ' + m.league : ''}</div>
+                        <div class="match-teams">
+                            <div class="team home">
+                                <span class="team-logo">${formatLogo(m.home.logo)}</span>
+                                <span class="team-name">${m.home.name}</span>
+                            </div>
+                            <div class="score">${m.score || ''}</div>
+                            <div class="team away">
+                                <span class="team-name">${m.away.name}</span>
+                                <span class="team-logo">${formatLogo(m.away.logo)}</span>
+                            </div>
+                        </div>
+                        <div class="match-result">
+                            <span class="result-badge ${m.result}">${m.result === 'win' ? 'فوز' : m.result === 'loss' ? 'خسارة' : 'تعادل'}</span>
+                        </div>`;
+                    completedContainer.appendChild(card);
+                });
+            }
+
+            updateMatchTimes();
+            // استعادة الفلاتر
+            currentFilter = localStorage.getItem('matchFilter') || 'all';
+            currentLeague = localStorage.getItem('leagueFilter') || 'all';
+            applyCombinedFilter();
+        } catch (e) {
+            console.error('فشل تحميل المباريات', e);
+        }
+    }
+
+    // تطبيق فلتر الحالة + فلتر الدوري معًا
+    function applyCombinedFilter() {
+        const cards = document.querySelectorAll('.match-card');
+        cards.forEach(card => {
+            const byStatus =
+                currentFilter === 'all' ? true : card.classList.contains(currentFilter);
+            const league = card.getAttribute('data-league') || 'غير محدد';
+            const byLeague = currentLeague === 'all' ? true : league === currentLeague;
+            card.style.display = byStatus && byLeague ? 'grid' : 'none';
+        });
+    }
+
+    // تشغيل تحميل البيانات
+    loadMatches();
+
+    // تحميل الأخبار
+    async function loadNews() {
+        const grid = document.getElementById('newsGrid');
+        if (!grid) return;
+        try {
+            const res = await fetch('assets/data/news.json', { cache: 'no-store' });
+            const data = await res.json();
+            const render = (items) => {
+                grid.innerHTML = '';
+                items.forEach(n => {
+                    const card = document.createElement('article');
+                    card.className = 'news-card';
+                    card.innerHTML = `
+                        <div class="news-image">${n.emoji || '📰'}</div>
+                        <div class="news-content">
+                            <span class="news-category">${n.category || ''}</span>
+                            <h3>${n.title}</h3>
+                            <p>${n.summary || ''}</p>
+                            <div class="news-meta">
+                                <span class="news-date">📅 ${n.date || ''}</span>
+                                <span class="news-author">🔗 ${n.source || ''}</span>
+                            </div>
+                            ${n.link ? `<div style="margin-top:.6rem"><a class="btn btn-secondary" target="_blank" rel="noopener" href="${n.link}">قراءة المزيد</a></div>` : ''}
+                        </div>`;
+                    grid.appendChild(card);
+                });
+            };
+            // افتراضي: العربية
+            render(data.arabic || []);
+            // ربط أزرار الفلترة للأخبار
+            document.querySelectorAll('[data-news-filter]')?.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('[data-news-filter]').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const type = btn.getAttribute('data-news-filter');
+                    render((type === 'international' ? data.international : data.arabic) || []);
+                });
+            });
+        } catch (e) {
+            console.error('فشل تحميل الأخبار', e);
+        }
+    }
+    loadNews();
+
     // عدّ تنازلي حي للمباريات القادمة (يتطلب data-date في البطاقة)
     function updateMatchTimes() {
         const upcomingMatches = document.querySelectorAll('.match-card.upcoming');
@@ -118,7 +268,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // تشغيل تحديث الأوقات كل دقيقة + تشغيل فوري
-    updateMatchTimes();
     setInterval(updateMatchTimes, 60000);
 
     // تأثير النقر على البطاقات
@@ -163,23 +312,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(typeWriter, 500);
     }
 
-    // تأثير العد للإحصائيات
-    const statNumbers = document.querySelectorAll('.stat-number');
-    statNumbers.forEach(stat => {
-        const finalNumber = parseInt(stat.textContent);
-        let currentNumber = 0;
-        const increment = finalNumber / 50; // تقسيم العدد على 50 خطوة
-        
-        const counter = setInterval(() => {
-            currentNumber += increment;
-            if (currentNumber >= finalNumber) {
-                stat.textContent = finalNumber;
-                clearInterval(counter);
-            } else {
-                stat.textContent = Math.floor(currentNumber);
-            }
-        }, 50);
-    });
+    // تم تعطيل قسم الإحصائيات بناءً على طلب المستخدم
 
     // إضافة تأثير الجسيمات للخلفية (اختياري)
     function createParticle() {

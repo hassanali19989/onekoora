@@ -740,6 +740,27 @@ header {
     margin-bottom: 1rem;
 }
 
+/* Matches */
+.matches-section .matches-table { display: grid; gap: 1rem; }
+.match-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem 1rem;
+  align-items: center;
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+}
+.match-date { display: flex; gap: .5rem; color: var(--muted); font-size: .9rem; }
+.match-league { color: var(--muted); font-size: .85rem; }
+.match-teams { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 1rem; }
+.team { display: flex; align-items: center; gap: .5rem; }
+.team .team-logo { width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+.team .team-logo img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; display: block; }
+.vs { font-weight: 700; color: var(--primary); }
+.match-venue, .match-result { grid-column: 1 / -1; color: var(--muted); font-size: .9rem; }
+
 /* Footer */
 footer {
     background: #333;
